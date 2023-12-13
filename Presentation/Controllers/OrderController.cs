@@ -4,14 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
 {
+    /// <summary>
+    /// No era necesaria la creación de este controlador en la prueba técnica,
+    /// pero se implementó para mostrar la forma de hacerlo.
+    /// </summary>
+
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    public class CustomerController : Controller
+    public class OrderController : Controller
     {
-        private readonly ICustomerService _service;
+        private readonly IOrderService _service;
 
-        public CustomerController(ICustomerService service)
+        public OrderController(IOrderService service)
         {
             _service = service;
         }
@@ -20,7 +25,7 @@ namespace Presentation.Controllers
         [Route("GetById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<CustomerDTO>> GetById(int Id)
+        public async Task<ActionResult<OrderDTO>> GetById(int Id)
         {
             var result = await _service.GetByIdAsync(Id);
             if (result == null)
@@ -33,7 +38,7 @@ namespace Presentation.Controllers
         [Route("GetAll")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<List<CustomerDTO>>> GetAll()
+        public async Task<ActionResult<List<OrderDTO>>> GetAll()
         {
             var result = await _service.GetAllAsync();
             if (result == null)
@@ -46,12 +51,12 @@ namespace Presentation.Controllers
         [Route("Add")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Add(CustomerDTO customer)
+        public async Task<ActionResult> Add(OrderDTO order)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            await _service.AddAsync(customer);
+            await _service.AddAsync(order);
             return Ok();
         }
 
@@ -59,19 +64,19 @@ namespace Presentation.Controllers
         [Route("Update")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Update(CustomerDTO customer)
+        public async Task<ActionResult> Update(OrderDTO order)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            if (!customer.CustomerId.HasValue)
+            if (!order.OrderId.HasValue)
                 return BadRequest();
 
-            var result = await _service.GetByIdAsync(customer.CustomerId.Value);
+            var result = await _service.GetByIdAsync(order.OrderId.Value);
             if (result == null)
                 return NotFound();
 
-            await _service.UpdateAsync(customer);
+            await _service.UpdateAsync(order);
             return Ok();
         }
 

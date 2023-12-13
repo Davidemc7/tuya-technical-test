@@ -40,7 +40,11 @@ namespace Application.Services
 
         public async Task UpdateAsync(CustomerDTO customer)
         {
-            var customerEntity = _mapper.Map<CustomerDTO, Customer>(customer);
+            var customerDB = await _repository.GetByIdAsync(customer.CustomerId.Value);
+            if (customerDB == null)
+                throw new Exception("Customer not found");
+
+            var customerEntity = _mapper.Map(customer, customerDB);
             await _repository.UpdateAsync(customerEntity);
         }
 

@@ -9,11 +9,31 @@ namespace Application.Mappings
         public ProfileAutoMapper()
         {
             ConfigureCustomer();
+            ConfigureOrder();
         }
 
         private void ConfigureCustomer()
         {
             CreateMap<Customer, CustomerDTO>().ReverseMap();
+        }
+
+        private void ConfigureOrder()
+        {
+            CreateMap<Order, OrderDTO>()
+                .AfterMap((t, dto) =>
+                {
+                    dto.Customer = new CustomerDTO
+                    {
+                        CustomerId = t.Customer.CustomerId,
+                        GivenName = t.Customer.GivenName,
+                        FamilyName = t.Customer.FamilyName,
+                        Email = t.Customer.Email,
+                        Phone = t.Customer.Phone,
+                        Address = t.Customer.Address
+                    };
+                });
+            CreateMap<OrderDTO, Order>()
+                .ForMember(dest => dest.Customer, opt => opt.Ignore());
         }
     }
 }

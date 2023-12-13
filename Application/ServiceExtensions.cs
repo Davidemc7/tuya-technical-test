@@ -15,6 +15,7 @@ namespace Application
 
             // Services Dependency Injection
             services.AddScoped(typeof(ICustomerService), typeof(CustomerService));
+            services.AddScoped(typeof(IOrderService), typeof(OrderService));
         }
     }
 }

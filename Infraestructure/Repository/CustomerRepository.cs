@@ -61,12 +61,14 @@ namespace Infraestructure.Repository
         public void Delete(Customer customer)
         {
             _dbContext.Customers.Remove(customer);
+            _dbContext.Entry(customer).State = EntityState.Deleted;
             _dbContext.SaveChanges();
         }
 
         public async Task DeleteAsync(Customer customer)
         {
             _dbContext.Customers.Remove(customer);
+            _dbContext.Entry(customer).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
         }
 
@@ -76,6 +78,7 @@ namespace Infraestructure.Repository
             if (customer == null)
             {
                 _dbContext.Customers.Remove(customer);
+                _dbContext.Entry(customer).State = EntityState.Deleted;
                 _dbContext.SaveChanges();
             }
         }
@@ -83,9 +86,10 @@ namespace Infraestructure.Repository
         public async Task DeleteByIdAsync(int id)
         {
             var customer = await _dbContext.Customers.FindAsync(id);
-            if (customer == null)
+            if (customer != null)
             {
                 _dbContext.Customers.Remove(customer);
+                _dbContext.Entry(customer).State = EntityState.Deleted;
                 await _dbContext.SaveChangesAsync();
             }
         }
@@ -98,6 +102,7 @@ namespace Infraestructure.Repository
                 customer.Retired = true;
                 customer.RetiredBy = 1;
                 customer.DateRetired = DateTime.Now;
+                _dbContext.Entry(customer).State = EntityState.Modified;
                 _dbContext.SaveChanges();
             }
         }
@@ -110,6 +115,7 @@ namespace Infraestructure.Repository
                 customer.Retired = true;
                 customer.RetiredBy = 1;
                 customer.DateRetired = DateTime.Now;
+                _dbContext.Entry(customer).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
             }
         }
